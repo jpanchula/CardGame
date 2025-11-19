@@ -9,15 +9,19 @@ public class Deck {
     public Deck(String[] ranks, String[] suits, int[] values) {
         this.cards = new ArrayList<Card>();
         this.cardsLeft = 0;
+        // Create and add Cards to the cards ArrayList
         for (String suit : suits) {
             for (int i = 0; i < ranks.length; i++) {
                 cards.add(new Card(ranks[i], suit, values[i]));
                 cardsLeft++;
             }
         }
+        // Shuffle the deck after creating all cards
+        shuffle();
     }
 
     /* Getters */
+    // Returns the number of cards left
     public int getCardsLeft() {
         return cardsLeft;
     }

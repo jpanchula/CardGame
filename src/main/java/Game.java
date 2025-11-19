@@ -1,4 +1,4 @@
-// Card Game by Jacob Panchula
+// Go Fish by Jacob Panchula
 
 public class Game {
     /* Constants */
@@ -35,11 +35,22 @@ public class Game {
     // Contains the logic to run the game
     public void play() {
         printInstructions();
+        deal();
     }
 
     // Prints the instructions for the game
     public static void printInstructions() {
-        System.out.println();
+        System.out.println("This is Go Fish!");
+    }
+
+    // Deals each player a hand of cards depending on the number of players
+    public void deal() {
+        int num_cards = players.length < 4 ? 7 : 5;
+        for (int i = 0; i < num_cards; i++) {
+            for (Player player : players) {
+                player.addCard(deck.deal());
+            }
+        }
     }
 
     // Main method
