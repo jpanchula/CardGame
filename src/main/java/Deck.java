@@ -44,10 +44,9 @@ public class Deck {
             // Generate a random int r between 0 and i inclusive
             int r = (int)(Math.random() * (i + 1));
             // Swap the card at index i with the card at index r
-            Card temp = cards.remove(i);
-            cards.add(i, cards.get(r));
-            cards.remove(r);
-            cards.add(r, temp);
+            Card temp = cards.get(i);
+            cards.set(i, cards.get(r));
+            cards.set(r, temp);
         }
     }
 }
