@@ -52,7 +52,34 @@ public class Player {
         return !hand.isEmpty();
     }
 
-    // TODO: Method that gives all cards of a rank to another player
+    // Gives all cards of a rank to another player and returns the number of cards that were given
+    public int give(String rank, Player other) {
+        int numCards = 0;
+        int i = 0;
+        while (i < hand.size()) {
+            // If the card has entered rank
+            if (hand.get(i).getRank().equals(rank)) {
+                // Give the card to the other player
+                other.addCard(hand.remove(i));
+                numCards++;
+            }
+            else {
+                // Increment i when a card is not removed
+                i++;
+            }
+        }
+        return numCards;
+    }
+
+    // TODO: Method that checks if the player has a book, if so, removing it from their hand and adds 1 to points
+    public boolean checkForBooks(String rank) {
+        return false;
+    }
+
+    // Method that returns true if the player names are equal
+    public boolean equals(String otherName) {
+        return name.equals(otherName);
+    }
 
     /* toString */
     @Override
