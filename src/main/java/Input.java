@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 /* Class with helper functions to get user input */
 public class Input {
     // Returns an integer from the user, -1 if invalid
@@ -14,10 +15,10 @@ public class Input {
     }
 
 
-    public static int getIntInRange(int min, int max) {
+    public static int getNumPlayers(int min, int max) {
         int numPlayers = 0;
         while (numPlayers < min || numPlayers > max) {
-            System.out.print("Enter the number of players (2-4): ");
+            System.out.print("Enter the number of players (" + min + "-" + max + "): ");
             numPlayers = Input.getInt();
             if (numPlayers < min || numPlayers > max) {
                 System.out.println("Must be in range " + min + " to " + max + "!");
@@ -49,9 +50,9 @@ public class Input {
         String input = "";
         // While the input is the name of a non-existent player or the input is self's name
         // or the input is the name of a player without cards in their hand
-        while (players[selfIndex] == Game.findPlayerWithName(players, input)
-                || (Game.findPlayerWithName(players, input) == null
-                || !Game.findPlayerWithName(players, input).hasCardsInHand())) {
+        while (Game.isUniquePlayerName(players, input)
+                || players[selfIndex] == Game.findPlayerWithName(players, input)
+                || !Game.findPlayerWithName(players, input).hasCardsInHand()) {
             // Get the user's input
             System.out.print("Enter the name of the person you would like to ask: ");
             input = scanner.nextLine();
@@ -60,19 +61,39 @@ public class Input {
                 System.out.println("Please enter a valid name!");
             else if (players[selfIndex] == Game.findPlayerWithName(players, input))
                 System.out.println("Please enter a name other than your own!");
-            else if ((Game.findPlayerWithName(players, input) != null &&
-                    !Game.findPlayerWithName(players, input).hasCardsInHand()))
+            // If the player does not have cards in their hand
+            else if (!Game.findPlayerWithName(players, input).hasCardsInHand())
                 System.out.println("Please enter a name that has cards in their hand!");
         }
-        Player player = Game.findPlayerWithName(players, input);
-        if (player != null)
-            return player;
-        System.out.println("STOP");
-        return new Player("");
-
+        return Game.findPlayerWithName(players, input);
     }
 
-    // TODO: Method that returns a valid rank from the user
+    // Returns a valid rank in the given hand from the user
+    public static String getRank(ArrayList<Card> hand) {
+        Scanner scanner = new Scanner(System.in);
+        String input = "";
+        boolean hasCard = false;
+        // While input is an invalid rank
+        while (Game.isInvalidRank(input) || !hasCard) {
+            System.out.print("Enter the rank of the card that you would like to ask for: ");
+            input = scanner.nextLine();
+            // For each card in the hand
+            for (Card card : hand) {
+                // If the card has the inputted rank
+                if (card.getRank().equalsIgnoreCase(input)) {
+                    hasCard = true;
+                    // Break the loop and return input
+                    break;
+                }
+            }
+            // Print error message if the rank is invalid
+            if (Game.isInvalidRank(input))
+                System.out.println("Please enter a valid rank!");
+            else if (!hasCard)
+                System.out.println("Please enter the rank of a card in your hand!");
+        }
+        return Game.formatRank(input);
+    }
 
     // Waits for the user to press enter
     public static void waitForEnter() {

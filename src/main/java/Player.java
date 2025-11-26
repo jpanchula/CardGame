@@ -58,7 +58,7 @@ public class Player {
         int i = 0;
         while (i < hand.size()) {
             // If the card has entered rank
-            if (hand.get(i).getRank().equals(rank)) {
+            if (hand.get(i).getRank().equalsIgnoreCase(rank)) {
                 // Give the card to the other player
                 other.addCard(hand.remove(i));
                 numCards++;
@@ -71,20 +71,37 @@ public class Player {
         return numCards;
     }
 
-    // TODO: Method that checks if the player has a book, if so, removing it from their hand and adds 1 to points
-    public boolean checkForBooks(String rank) {
-        return false;
+    // Returns true if the player has a book, if so, removing it from their hand and adds 1 to points
+    public void checkForBook(String rank) {
+        int numCards = 0;
+        for (Card card : hand) {
+            if (card.getRank().equalsIgnoreCase(rank))
+                numCards++;
+        }
+        // If the player has a book
+        if (numCards == 4) {
+            // Print that they have a book
+            System.out.println(name + " made a book of " + rank + "s!");
+            points++;
+            // For each card in the hand
+            for (int i = 0; i < hand.size(); i++) {
+                // If the card has the rank
+                if (hand.get(i).getRank().equalsIgnoreCase(rank))
+                    // Remove it from the hand then decrement i to avoid skipping the next index
+                    hand.remove(i--);
+            }
+        }
     }
 
     // Method that returns true if the player names are equal
     public boolean equals(String otherName) {
-        return name.equals(otherName);
+        return name.equalsIgnoreCase(otherName);
     }
 
     /* toString */
     @Override
     public String toString() {
-        return name + " has " + points + " points\n" +
+        return name + " has " + points + " points.\n" +
                 name + "'s cards: " + hand;
     }
 }
