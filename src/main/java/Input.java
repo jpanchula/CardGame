@@ -21,7 +21,7 @@ public class Input {
             System.out.print("Enter the number of players (" + min + "-" + max + "): ");
             numPlayers = Input.getInt();
             if (numPlayers < min || numPlayers > max) {
-                System.out.println("Must be in range " + min + " to " + max + "!");
+                System.out.println("The number must be in range " + min + " to " + max + " inclusive!");
             }
         }
         return numPlayers;
@@ -58,12 +58,12 @@ public class Input {
             input = scanner.nextLine();
             // Error messages
             if (Game.isUniquePlayerName(players, input))
-                System.out.println("Please enter a valid name!");
+                System.out.println("Name must be the name of another player!");
             else if (players[selfIndex] == Game.findPlayerWithName(players, input))
-                System.out.println("Please enter a name other than your own!");
+                System.out.println("Name cannot be your own!");
             // If the player does not have cards in their hand
             else if (!Game.findPlayerWithName(players, input).hasCardsInHand())
-                System.out.println("Please enter a name that has cards in their hand!");
+                System.out.println("Name must be a player that has cards in their hand!");
         }
         return Game.findPlayerWithName(players, input);
     }
@@ -92,6 +92,7 @@ public class Input {
             else if (!hasCard)
                 System.out.println("Please enter the rank of a card in your hand!");
         }
+        // Return a correctly formatted rank
         return Game.formatRank(input);
     }
 

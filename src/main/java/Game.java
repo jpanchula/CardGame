@@ -35,40 +35,45 @@ public class Game {
         int i = 0;
         // While the game is not over
         while (!gameOver()) {
-            // Wrap the index if it went out of bounds
-            i %= players.length;
             // Print the player and their hand
             System.out.println(players[i]);
             // If the player does not have cards in their hand and the deck is empty
             if (!players[i].hasCardsInHand() && deck.isEmpty()) {
-                // Skip turn
-                i++;
+                // Skip turn, moving index to the next player
+                i = (i + 1) % players.length;
             }
+            // TODO: Implement the rest of the play logic into a function for abstraction
             // If the player does not have cards in their hand but there's cards in the deck
-            if (!players[i].hasCardsInHand() && !deck.isEmpty()) {
+            else if (!players[i].hasCardsInHand() && !deck.isEmpty()) {
                 // Have the player draw a card
                 drawCard(players[i]);
             }
             // If the player has cards in their hand
             if (players[i].hasCardsInHand()) {
+                // Get an opponent that the player is asking
                 Player opponent;
                 // If there are more than two players
                 if (players.length > 2)
-                    // Get and validate an opponent that the player is asking
+                    // Ask the player for who they're asking
                     opponent = Input.getOpponent(players, i);
                 else
                     // Automatically set the opponent as the other player
                     opponent = players[(i + 1) % 2];
-                // Get and validate a rank that the player is asking for
+
+                // Get a rank that the player is asking for
                 String rank = Input.getRank(players[i].getHand());
+
+                // Draw buffer to pass to opponent and print their cards
+                drawBuffer(opponent);
+                System.out.println(opponent);
+                // Print what the player is asking for
+                System.out.println(players[i].getName() + " is asking you for " + rank + "s.");
 
                 // Transfers all cards of rank from the opponent's hand to the player's hand
                 int numCards = opponent.give(rank, players[i]);
-
                 // If the opponent had none of the rank
                 if (numCards == 0) {
-                    // Draw buffer to pass to opponent
-                    drawBuffer(opponent);
+                    // Allow opponent to tell the player to go fish
                     System.out.print("Press enter to tell " + players[i].getName() + " to go fish!");
                     Input.waitForEnter();
                     // Draw buffer to pass back to the player
@@ -76,21 +81,32 @@ public class Game {
                     System.out.println(opponent.getName() + " tells " + players[i].getName() + " to go fish!");
                     drawCard(players[i]);
                     players[i].checkForBook(rank);
-                    System.out.println("Press enter to end your turn.");
-                    Input.waitForEnter();
-                    // Go to the next turn and draw buffer
-                    drawBuffer(players[++i % players.length]);
+                    // If the player caught a card with the rank they were looking for
+                    if (rank.equals(players[i].getHand().getLast().getRank())) {
+                        // Allow player to continue their turn
+                        System.out.println("You caught a(n) " + rank + "!");
+                        System.out.println("Press enter to continue your turn.");
+                        Input.waitForEnter();
+                    }
+                    else {
+                        // Allow player to end their turn
+                        System.out.println("Press enter to end your turn.");
+                        Input.waitForEnter();
+                        // Go to the next turn and draw buffer
+                        // The expression within the player index here moves i to the next player
+                        drawBuffer(players[++i % players.length]);
+                    }
                 }
                 else {
-                    // Draw buffer to pass to opponent
-                    drawBuffer(opponent);
+                    // Allow opponent to give their cards to the player
                     System.out.print("Press enter to give " + players[i].getName() + " your " + rank + "(s)!");
                     Input.waitForEnter();
                     // Draw buffer to pass back to current player
                     drawBuffer(players[i]);
                     System.out.println("You got " + numCards + " " + rank + "(s) from " + opponent.getName() + "!");
+                    // Check if they made a book
                     players[i].checkForBook(rank);
-                    System.out.println("Press enter to continue to your next turn.");
+                    System.out.println("Press enter to continue your turn.");
                     Input.waitForEnter();
                 }
             }
@@ -99,7 +115,7 @@ public class Game {
 
     // Draws a card
     public void drawCard(Player player) {
-        System.out.println("Press enter to draw a card!");
+        System.out.println("Press enter to draw a card.");
         Input.waitForEnter();
         player.addCard(deck.deal());
         System.out.println("You drew the " + player.getHand().getLast() + "!");
@@ -141,8 +157,10 @@ public class Game {
             System.out.println();
         }
         // Wait for the next player to press enter to continue
-        System.out.println("Give the computer to " + player.getName() + " and press enter to continue!");
+        System.out.println("Give the computer to " + player.getName() + " and press enter to continue.");
         Input.waitForEnter();
+        // Print the player's points and cards
+        System.out.println(player);
     }
 
     // Returns a properly capitalized rank
@@ -159,7 +177,9 @@ public class Game {
 
     // Returns true if name is not the name of another player
     public static boolean isUniquePlayerName(Player[] players, String name) {
+        // For each player
         for (Player player : players) {
+            // If the player is not null and has the same name
             if (player != null && player.equals(name))
                 return false;
         }
