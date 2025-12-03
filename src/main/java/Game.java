@@ -86,11 +86,13 @@ public class Game {
             // Draw buffer to pass back to the current player
             drawBuffer(players[index]);
             System.out.println(opponent.getName() + " tells " + players[index].getName() + " to go fish!");
-            // Draw card and check if they made a book
+            // Draw card and store its rank
             drawCard(players[index]);
+            String cardRank = players[index].getHand().getLast().getRank();
+            // Check for a book
             players[index].checkForBook(rank);
             // If the player caught a card with the rank they were looking for
-            if (rank.equals(players[index].getHand().getLast().getRank())) {
+            if (rank.equals(cardRank)) {
                 // Allow player to continue their turn
                 System.out.println("You caught a(n) " + rank + "!");
                 System.out.println("Press enter to continue your turn.");
