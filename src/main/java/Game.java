@@ -35,6 +35,7 @@ public class Game {
         deal();
         // While the game is not over
         while (!gameOver()) {
+            // Print the player's points and hand
             System.out.println(players[index]);
             // If the player does not have cards in their hand and the deck is empty
             if (!players[index].hasCardsInHand() && deck.isEmpty()) {
@@ -51,6 +52,8 @@ public class Game {
             // Play the turn after verifying that the player now has cards in their hand
             playTurn();
         }
+
+        printScores();
     }
 
     public void playTurn() {
@@ -97,9 +100,10 @@ public class Game {
                 // Allow player to end their turn
                 System.out.println("Press enter to end your turn.");
                 Input.waitForEnter();
-                // Go to the next turn and draw buffer
-                // The expression here moves index to the next player
-                drawBuffer(players[++index % players.length]);
+                // Moves index to the next player
+                index = (index + 1) % players.length;
+                // Draw buffer and move on to the next turn
+                drawBuffer(players[index]);
             }
         }
         else {
@@ -150,6 +154,14 @@ public class Game {
         }
         // If thirteen books have been won, the game is over
         return pointSum == 13;
+    }
+
+    public void printScores() {
+        System.out.println("\nFinal scores:");
+        for (Player player : players) {
+            System.out.println(player.getName() + " has " + player.getPoints() + " point(s).");
+        }
+        System.out.println("\nThank you for playing!");
     }
 
     /* Static Methods */
