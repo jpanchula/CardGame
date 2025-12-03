@@ -12,10 +12,12 @@ public class Game {
     /* Instance variables */
     Player[] players;
     Deck deck;
+    int index;
 
     /* Constructor */
     public Game() {
         deck = new Deck(RANKS, SUITS, VALUES);
+        index = 0;
         // Initialize players, validating that the number of players is within the range
         players = new Player[Input.getNumPlayers(MIN_PLAYERS, MAX_PLAYERS)];
         // For each player
@@ -31,89 +33,91 @@ public class Game {
     public void play() {
         printInstructions();
         deal();
-        // Player index
-        int i = 0;
         // While the game is not over
         while (!gameOver()) {
-            // Print the player and their hand
-            System.out.println(players[i]);
+            System.out.println(players[index]);
             // If the player does not have cards in their hand and the deck is empty
-            if (!players[i].hasCardsInHand() && deck.isEmpty()) {
+            if (!players[index].hasCardsInHand() && deck.isEmpty()) {
                 // Skip turn, moving index to the next player
-                i = (i + 1) % players.length;
+                index = (index + 1) % players.length;
+                continue;
             }
-            // TODO: Implement the rest of the play logic into a function for abstraction
             // If the player does not have cards in their hand but there's cards in the deck
-            else if (!players[i].hasCardsInHand() && !deck.isEmpty()) {
+            else if (!players[index].hasCardsInHand()) {
                 // Have the player draw a card
-                drawCard(players[i]);
+                drawCard(players[index]);
             }
-            // If the player has cards in their hand
-            if (players[i].hasCardsInHand()) {
-                // Get an opponent that the player is asking
-                Player opponent;
-                // If there are more than two players
-                if (players.length > 2)
-                    // Ask the player for who they're asking
-                    opponent = Input.getOpponent(players, i);
-                else
-                    // Automatically set the opponent as the other player
-                    opponent = players[(i + 1) % 2];
 
-                // Get a rank that the player is asking for
-                String rank = Input.getRank(players[i].getHand());
-
-                // Draw buffer to pass to opponent and print their cards
-                drawBuffer(opponent);
-                System.out.println(opponent);
-                // Print what the player is asking for
-                System.out.println(players[i].getName() + " is asking you for " + rank + "s.");
-
-                // Transfers all cards of rank from the opponent's hand to the player's hand
-                int numCards = opponent.give(rank, players[i]);
-                // If the opponent had none of the rank
-                if (numCards == 0) {
-                    // Allow opponent to tell the player to go fish
-                    System.out.print("Press enter to tell " + players[i].getName() + " to go fish!");
-                    Input.waitForEnter();
-                    // Draw buffer to pass back to the player
-                    drawBuffer(players[i]);
-                    System.out.println(opponent.getName() + " tells " + players[i].getName() + " to go fish!");
-                    drawCard(players[i]);
-                    players[i].checkForBook(rank);
-                    // If the player caught a card with the rank they were looking for
-                    if (rank.equals(players[i].getHand().getLast().getRank())) {
-                        // Allow player to continue their turn
-                        System.out.println("You caught a(n) " + rank + "!");
-                        System.out.println("Press enter to continue your turn.");
-                        Input.waitForEnter();
-                    }
-                    else {
-                        // Allow player to end their turn
-                        System.out.println("Press enter to end your turn.");
-                        Input.waitForEnter();
-                        // Go to the next turn and draw buffer
-                        // The expression within the player index here moves i to the next player
-                        drawBuffer(players[++i % players.length]);
-                    }
-                }
-                else {
-                    // Allow opponent to give their cards to the player
-                    System.out.print("Press enter to give " + players[i].getName() + " your " + rank + "(s)!");
-                    Input.waitForEnter();
-                    // Draw buffer to pass back to current player
-                    drawBuffer(players[i]);
-                    System.out.println("You got " + numCards + " " + rank + "(s) from " + opponent.getName() + "!");
-                    // Check if they made a book
-                    players[i].checkForBook(rank);
-                    System.out.println("Press enter to continue your turn.");
-                    Input.waitForEnter();
-                }
-            }
+            // Play the turn after verifying that the player now has cards in their hand
+            playTurn();
         }
     }
 
-    // Draws a card
+    public void playTurn() {
+        // Get an opponent that the player is asking
+        Player opponent;
+        // If there are more than two players
+        if (players.length > 2)
+            // Ask the player for who they're asking
+            opponent = Input.getOpponent(players, index);
+        else
+            // Automatically set the opponent as the other player
+            opponent = players[(index + 1) % 2];
+
+        // Get a rank that the player is asking for
+        String rank = Input.getRank(players[index].getHand());
+
+        // Draw buffer to pass to opponent and print their cards
+        drawBuffer(opponent);
+        System.out.println(opponent);
+        // Print what the player is asking for
+        System.out.println(players[index].getName() + " is asking you for " + rank + "s.");
+
+        // Transfers all cards of rank from the opponent's hand to the player's hand
+        int numCards = opponent.give(rank, players[index]);
+        // If the opponent had none of the rank
+        if (numCards == 0) {
+            // Allow opponent to tell the player to go fish
+            System.out.print("Press enter to tell " + players[index].getName() + " to go fish!");
+            Input.waitForEnter();
+            // Draw buffer to pass back to the current player
+            drawBuffer(players[index]);
+            System.out.println(opponent.getName() + " tells " + players[index].getName() + " to go fish!");
+            // Draw card and check if they made a book
+            drawCard(players[index]);
+            players[index].checkForBook(rank);
+            // If the player caught a card with the rank they were looking for
+            if (rank.equals(players[index].getHand().getLast().getRank())) {
+                // Allow player to continue their turn
+                System.out.println("You caught a(n) " + rank + "!");
+                System.out.println("Press enter to continue your turn.");
+                Input.waitForEnter();
+            }
+            else {
+                // Allow player to end their turn
+                System.out.println("Press enter to end your turn.");
+                Input.waitForEnter();
+                // Go to the next turn and draw buffer
+                // The expression here moves index to the next player
+                drawBuffer(players[++index % players.length]);
+            }
+        }
+        else {
+            // Allow opponent to give their cards to the player
+            System.out.print("Press enter to give " + players[index].getName() + " your " + rank + "(s)!");
+            Input.waitForEnter();
+            // Draw buffer to pass back to current player
+            drawBuffer(players[index]);
+            System.out.println("You got " + numCards + " " + rank + "(s) from " + opponent.getName() + "!");
+            // Check if they made a book
+            players[index].checkForBook(rank);
+            // Allow player to continue their turn
+            System.out.println("Press enter to continue your turn.");
+            Input.waitForEnter();
+        }
+    }
+
+    // Allows the user to draw a card
     public void drawCard(Player player) {
         System.out.println("Press enter to draw a card.");
         Input.waitForEnter();
@@ -159,8 +163,6 @@ public class Game {
         // Wait for the next player to press enter to continue
         System.out.println("Give the computer to " + player.getName() + " and press enter to continue.");
         Input.waitForEnter();
-        // Print the player's points and cards
-        System.out.println(player);
     }
 
     // Returns a properly capitalized rank
