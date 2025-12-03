@@ -219,8 +219,15 @@ public class Game {
 
     // Prints the instructions for the game
     public static void printInstructions() {
-        // TODO: Write instructions
-        System.out.println("This is Go Fish!");
+        System.out.println("\nThis is Go Fish!");
+        System.out.println("The goal is to win the most \"books\" of cards. A book is any four of a kind.");
+        System.out.println("The player asks an opponent by name for one of the card ranks they have in their hand.");
+        System.out.println("If the opponent has the card, they must give all of them over and the player continues their turn.");
+        System.out.println("If the opponent does not have the card, they must tell the player to go fish.");
+        System.out.println("If you are told to go fish, you draw a card at random from the deck.");
+        System.out.println("If you get the card you were originally asking for, you made a \"catch\" so you can continue your turn.");
+        System.out.println("If you do not get the card you were originally asking for, your turn is over.");
+        System.out.println("The game ends when all 13 possible books are obtained.\n");
     }
 
     // Main method
