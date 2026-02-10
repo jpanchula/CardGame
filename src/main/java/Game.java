@@ -9,15 +9,38 @@ public class Game {
     private static final int MIN_PLAYERS = 2;
     private static final int MAX_PLAYERS = 4;
 
+    public static final String[] INSTRUCTIONS = {
+            "\nThis is Go Fish!",
+            "The goal is to win the most \"books\" of cards. A book is any four of a kind.",
+            "The player asks an opponent by name for one of the card ranks they have in their hand.",
+            "If the opponent has the card, they must give all of them over and the player continues their turn.",
+            "If the opponent does not have the card, they must tell the player to go fish.",
+            "If you are told to go fish, you draw a card at random from the deck.",
+            "If you get the card you were originally asking for, you made a \"catch\" so you can continue your turn.",
+            "If you do not get the card you were originally asking for, your turn is over.",
+            "The game ends when all 13 possible books are obtained.\n"
+    };
+
+    /* State constants */
+    public static final int STATE_INIT = 0;
+    public static final int STATE_INSTR = 1;
+    public static final int STATE_PLAY = 2;
+    public static final int STATE_BUFFER = 3;
+    public static final int STATE_END = 4;
+
     /* Instance variables */
-    Player[] players;
-    Deck deck;
-    int index;
+    private Player[] players;
+    private Deck deck;
+    private int index;
+    private int state;
+    private GameView window;
 
     /* Constructor */
     public Game() {
+        window = new GameView(this);
         deck = new Deck(RANKS, SUITS, VALUES);
         index = 0;
+        state = STATE_INIT;
         // Initialize players, validating that the number of players is within the range
         players = new Player[Input.getNumPlayers(MIN_PLAYERS, MAX_PLAYERS)];
         // For each player
@@ -166,6 +189,25 @@ public class Game {
         System.out.println("\nThank you for playing!");
     }
 
+    // Returns the state
+    public int getState() {
+        return state;
+    }
+
+    // Prints the instructions for Go Fish
+    public void printInstructions() {
+        state = STATE_INSTR;
+        window.repaint();
+        // Print the instructions
+        for (String line : INSTRUCTIONS) {
+            System.out.println(line);
+        }
+
+        // Wait until the user moves on
+        System.out.println("Press enter to begin!");
+        Input.waitForEnter();
+    }
+
     /* Static Methods */
 
     // Draws a buffer to pass the turn to the given player
@@ -229,19 +271,6 @@ public class Game {
         // Throw an error if the player with that name is non-existent
         // This function is only called after name is verified so this shouldn't happen
         throw new RuntimeException();
-    }
-
-    // Prints the instructions for the game
-    public static void printInstructions() {
-        System.out.println("\nThis is Go Fish!");
-        System.out.println("The goal is to win the most \"books\" of cards. A book is any four of a kind.");
-        System.out.println("The player asks an opponent by name for one of the card ranks they have in their hand.");
-        System.out.println("If the opponent has the card, they must give all of them over and the player continues their turn.");
-        System.out.println("If the opponent does not have the card, they must tell the player to go fish.");
-        System.out.println("If you are told to go fish, you draw a card at random from the deck.");
-        System.out.println("If you get the card you were originally asking for, you made a \"catch\" so you can continue your turn.");
-        System.out.println("If you do not get the card you were originally asking for, your turn is over.");
-        System.out.println("The game ends when all 13 possible books are obtained.\n");
     }
 
     // Main method
