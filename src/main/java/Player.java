@@ -83,7 +83,7 @@ public class Player {
         if (numCards == 4) {
             // Print that they have a book and add to their points
             System.out.println(name + " made a book of " + rank + "s!");
-            points++;
+            addPoints(1);
             // For each card in the hand
             for (int i = 0; i < hand.size(); i++) {
                 // If the card has the rank
