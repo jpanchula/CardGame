@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Player {
@@ -5,13 +6,16 @@ public class Player {
     private String name;
     private ArrayList<Card> hand;
     private int points;
+    private int playerNum;
+    private boolean playing;
 
     /* Constructors */
     // Creates a player with just a name
-    public Player(String name) {
+    public Player(String name, int playerNum) {
         this.name = name;
         this.hand = new ArrayList<Card>();
         this.points = 0;
+        this.playerNum = playerNum;
     }
 
     // Creates a player with a name and a hand
@@ -21,7 +25,7 @@ public class Player {
         this.points = 0;
     }
 
-    /* Getters */
+    /* Getters and Setters */
     // Returns the player's name
     public String getName() {
         return name;
@@ -32,8 +36,14 @@ public class Player {
         return hand;
     }
 
+    // Returns the player's points
     public int getPoints() {
         return points;
+    }
+
+    // Sets the current value of the playing boolean
+    public void setPlaying(boolean playing) {
+        this.playing = playing;
     }
 
     /* Methods */
@@ -97,6 +107,14 @@ public class Player {
     // Method that returns true if the player names are equal
     public boolean equals(String otherName) {
         return name.equalsIgnoreCase(otherName);
+    }
+
+
+    /* Draws the current hand */
+    public void draw(Graphics g) {
+        for (Card c : hand) {
+            c.draw(g, 400, 400, playing);
+        }
     }
 
     /* toString */

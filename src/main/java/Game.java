@@ -38,7 +38,7 @@ public class Game {
     /* Constructor */
     public Game() {
         window = new GameView(this);
-        deck = new Deck(RANKS, SUITS, VALUES);
+        deck = new Deck(RANKS, SUITS, VALUES, window);
         index = 0;
         state = STATE_INIT;
         // Initialize players, validating that the number of players is within the range
@@ -46,7 +46,7 @@ public class Game {
         // For each player
         for (int i = 0; i < players.length; i++) {
             // Get each name, validating uniqueness
-            players[i] = new Player(Input.getUniqueName(players, i));
+            players[i] = new Player(Input.getUniqueName(players, i), i);
         }
     }
 
@@ -80,6 +80,9 @@ public class Game {
     }
 
     public void playTurn() {
+        state = STATE_PLAY;
+        window.repaint();
+        players[index].setPlaying(true);
         // Get an opponent that the player is asking
         Player opponent;
         // If there are more than two players
@@ -194,6 +197,16 @@ public class Game {
         return state;
     }
 
+    // Returns the players
+    public Player[] getPlayers() {
+        return players;
+    }
+
+    // Returns the deck
+    public Deck getDeck() {
+        return deck;
+    }
+
     // Prints the instructions for Go Fish
     public void printInstructions() {
         state = STATE_INSTR;
@@ -211,7 +224,9 @@ public class Game {
     /* Static Methods */
 
     // Draws a buffer to pass the turn to the given player
-    public static void drawBuffer(Player player) {
+    public void drawBuffer(Player player) {
+        state = STATE_BUFFER;
+        window.repaint();
         // Draw 100 new lines
         for (int i = 0; i < 100; i++) {
             System.out.println();
@@ -219,6 +234,9 @@ public class Game {
         // Wait for the next player to press enter to continue
         System.out.println("Give the computer to " + player.getName() + " and press enter to continue.");
         Input.waitForEnter();
+        state = STATE_PLAY;
+        player.setPlaying(true);
+        window.repaint();
     }
 
     // Returns a properly capitalized rank

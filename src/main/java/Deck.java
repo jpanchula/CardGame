@@ -6,14 +6,14 @@ public class Deck {
     private int cardsLeft;
 
     /* Constructor */
-    public Deck(String[] ranks, String[] suits, int[] values) {
+    public Deck(String[] ranks, String[] suits, int[] values, GameView window) {
         this.cards = new ArrayList<Card>();
         this.cardsLeft = 0;
         // Create and add Cards to the cards ArrayList
-        for (String suit : suits) {
-            for (int i = 0; i < ranks.length; i++) {
-                cards.add(new Card(ranks[i], suit, values[i]));
+        for (int i = 0; i < ranks.length; i++) {
+            for (String suit : suits) {
                 cardsLeft++;
+                cards.add(new Card(ranks[i], suit, values[i], cardsLeft, window));
             }
         }
         // Shuffle the deck after creating all cards
