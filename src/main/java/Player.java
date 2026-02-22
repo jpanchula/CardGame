@@ -2,12 +2,21 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Player {
+    /* Constants for initial card positions */
+    private static final int[] PLAYER_1_POS = {175, GameView.WINDOW_SIZE - 150};
+    private static final int[] PLAYER_2_POS = {75, 150};
+    private static final int[] PLAYER_3_POS = {175, 50};
+    private static final int[] PLAYER_4_POS = {GameView.WINDOW_SIZE - 125, 150};
+
+    /* Static variables */
+    private static int numPlayers;
+    private static int currentTurn;
+
     /* Instance variables */
     private String name;
     private ArrayList<Card> hand;
     private int points;
     private int playerNum;
-    private boolean playing;
 
     /* Constructors */
     // Creates a player with just a name
@@ -41,9 +50,18 @@ public class Player {
         return points;
     }
 
-    // Sets the current value of the playing boolean
-    public void setPlaying(boolean playing) {
-        this.playing = playing;
+    public int getPlayerNum() {
+        return playerNum;
+    }
+
+    // Sets the current turn
+    public static void setCurrentTurn(int turn) {
+        currentTurn = turn;
+    }
+
+    // Sets the number of players
+    public static void setNumPlayers(int num) {
+        numPlayers = num;
     }
 
     /* Methods */
@@ -110,10 +128,60 @@ public class Player {
     }
 
 
-    /* Draws the current hand */
+    /* Draws the current hand and player label */
     public void draw(Graphics g) {
+        // Position for the first card
+        int x, y;
+        // Layout of the cards
+        boolean horizontal;
+        // Set color and font
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Serif", Font.PLAIN, 15));
+        // Check playerNum for initial values
+        switch (playerNum) {
+            case 0:
+                // Initialize variables for card drawing
+                x = PLAYER_1_POS[0];
+                y = PLAYER_1_POS[1];
+                horizontal = true;
+                // Draw name
+                g.drawString(name, GameView.WINDOW_SIZE / 2, GameView.WINDOW_SIZE - 150);
+                break;
+            case 1:
+                // Initialize variables for card drawing
+                x = PLAYER_2_POS[0];
+                y = PLAYER_2_POS[1];
+                horizontal = false;
+                // Draw name
+                g.drawString(name, 150, GameView.WINDOW_SIZE / 2);
+                break;
+            case 2:
+                // Initialize variables for card drawing
+                x = PLAYER_3_POS[0];
+                y = PLAYER_3_POS[1];
+                horizontal = true;
+                // Draw name
+                g.drawString(name, GameView.WINDOW_SIZE / 2, 150);
+                break;
+            default:
+                // Initialize variables for card drawing
+                x = PLAYER_4_POS[0];
+                y = PLAYER_4_POS[1];
+                horizontal = false;
+                // Draw name
+                g.drawString(name, GameView.WINDOW_SIZE - 150, GameView.WINDOW_SIZE / 2);
+                break;
+        }
+        // Calculate the offset for each card
+        int offset = 500 / hand.size();
+        // Draw each card
         for (Card c : hand) {
-            c.draw(g, 400, 400, playing);
+            c.draw(g, x, y, playerNum == currentTurn, horizontal);
+            // Update position based on layout
+            if (horizontal)
+                x += offset;
+            else
+                y += offset;
         }
     }
 

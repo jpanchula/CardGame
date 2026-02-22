@@ -53,7 +53,11 @@ public class Card {
     }
 
     /* Draw self */
-    public void draw(Graphics g, int x, int y, boolean isDisplayed) {
+    public void draw(Graphics g, int x, int y, boolean isDisplayed, boolean horizontal) {
+        // TODO: Deal with rotation
+        if (!horizontal) {
+
+        }
         g.drawImage((isDisplayed ? cardImage : cardBack),
                 x, y,
                 75, 105,
