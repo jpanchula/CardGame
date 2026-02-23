@@ -2,11 +2,8 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Player {
-    /* Constants for initial card positions */
-    private static final int[] PLAYER_1_POS = {175, GameView.WINDOW_SIZE - 150};
-    private static final int[] PLAYER_2_POS = {75, 150};
-    private static final int[] PLAYER_3_POS = {175, 50};
-    private static final int[] PLAYER_4_POS = {GameView.WINDOW_SIZE - 125, 150};
+    /* Constants for hand positions */
+    private static final int[] PLAYER_POS = {175, GameView.WINDOW_SIZE - 150};
 
     /* Static variables */
     private static int numPlayers;
@@ -131,57 +128,38 @@ public class Player {
     /* Draws the current hand and player label */
     public void draw(Graphics g) {
         // Position for the first card
-        int x, y;
-        // Layout of the cards
-        boolean horizontal;
-        // Set color and font
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Serif", Font.PLAIN, 15));
-        // Check playerNum for initial values
+        int x = PLAYER_POS[0];
+        int y = PLAYER_POS[1];
+        // Create a Graphics2D object
+        Graphics2D g2d = (Graphics2D) g.create();
+
+        // Check playerNum for rotation
         switch (playerNum) {
-            case 0:
-                // Initialize variables for card drawing
-                x = PLAYER_1_POS[0];
-                y = PLAYER_1_POS[1];
-                horizontal = true;
-                // Draw name
-                g.drawString(name, GameView.WINDOW_SIZE / 2, GameView.WINDOW_SIZE - 150);
-                break;
             case 1:
-                // Initialize variables for card drawing
-                x = PLAYER_2_POS[0];
-                y = PLAYER_2_POS[1];
-                horizontal = false;
-                // Draw name
-                g.drawString(name, 150, GameView.WINDOW_SIZE / 2);
+                // Rotate 90 degrees around the center
+                g2d.rotate(Math.toRadians(90), GameView.WINDOW_SIZE / 2.0, GameView.WINDOW_SIZE / 2.0);
                 break;
             case 2:
-                // Initialize variables for card drawing
-                x = PLAYER_3_POS[0];
-                y = PLAYER_3_POS[1];
-                horizontal = true;
-                // Draw name
-                g.drawString(name, GameView.WINDOW_SIZE / 2, 150);
+                // Rotate 180 degrees around the center
+                g2d.rotate(Math.toRadians(180), GameView.WINDOW_SIZE / 2.0, GameView.WINDOW_SIZE / 2.0);
                 break;
-            default:
-                // Initialize variables for card drawing
-                x = PLAYER_4_POS[0];
-                y = PLAYER_4_POS[1];
-                horizontal = false;
-                // Draw name
-                g.drawString(name, GameView.WINDOW_SIZE - 150, GameView.WINDOW_SIZE / 2);
+            case 3:
+                // Rotate -90 degrees around the center
+                g2d.rotate(Math.toRadians(-90), GameView.WINDOW_SIZE / 2.0, GameView.WINDOW_SIZE / 2.0);
                 break;
         }
+        // Set color and font
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Serif", Font.PLAIN, 20));
+        // Draw name
+        g2d.drawString(name, GameView.WINDOW_SIZE / 2, GameView.WINDOW_SIZE - 200);
         // Calculate the offset for each card
-        int offset = 500 / hand.size();
+        int offset = (500) / hand.size();
         // Draw each card
         for (Card c : hand) {
-            c.draw(g, x, y, playerNum == currentTurn, horizontal);
-            // Update position based on layout
-            if (horizontal)
-                x += offset;
-            else
-                y += offset;
+            c.draw(g2d, x, y, playerNum == currentTurn);
+            // Update position based on offset
+            x += offset;
         }
     }
 

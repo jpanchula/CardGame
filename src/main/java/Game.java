@@ -1,5 +1,5 @@
 // Go Fish by Jacob Panchula
-
+// TODO: Points counter for each player
 public class Game {
     /* Constants */
     private static final String[] SUITS = {"Clubs", "Diamonds", "Hearts", "Spades"};
@@ -36,16 +36,18 @@ public class Game {
 
     /* Constructor */
     public Game() {
+        // Create a window
         window = new GameView(this);
+        // Create a deck
         deck = new Deck(RANKS, SUITS, VALUES, window);
+        // Initialize index and state
         index = 0;
         state = STATE_INIT;
-        // Initialize players, validating that the number of players is within the accepted range
+        // Initialize players array, validating that the number of players is within the accepted range
         players = new Player[Input.getNumPlayers(MIN_PLAYERS, MAX_PLAYERS)];
         Player.setNumPlayers(players.length);
-        // For each player
+        // Create each player with a unique name
         for (int i = 0; i < players.length; i++) {
-            // Get each name, validating uniqueness
             players[i] = new Player(Input.getUniqueName(players, i), i);
         }
     }
@@ -274,12 +276,11 @@ public class Game {
         }
         // For each rank
         for (String rank : RANKS) {
-            // If the rank is equal to the input
+            // Return false if the rank is equal to the input
             if (rank.equalsIgnoreCase(input))
-                // Return true
                 return false;
         }
-        // Return false
+        // Return true after checking against ranks
         return true;
     }
 

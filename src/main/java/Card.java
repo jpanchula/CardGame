@@ -2,8 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Card {
-    /* Constant image */
+    /* Constants */
     public static final Image cardBack = new ImageIcon("src/main/resources/Cards/back.png").getImage();
+    public static final int CARD_WIDTH = 75;
+    private static final int CARD_HEIGHT = 105;
 
     /* Instance variables */
     private String rank;
@@ -53,14 +55,11 @@ public class Card {
     }
 
     /* Draw self */
-    public void draw(Graphics g, int x, int y, boolean isDisplayed, boolean horizontal) {
-        // TODO: Deal with rotation
-        if (!horizontal) {
-
-        }
+    public void draw(Graphics2D g, int x, int y, boolean isDisplayed) {
+        // Draw the normal image
         g.drawImage((isDisplayed ? cardImage : cardBack),
                 x, y,
-                75, 105,
+                CARD_WIDTH, CARD_HEIGHT,
                 window);
     }
 

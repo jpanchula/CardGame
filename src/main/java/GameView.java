@@ -4,7 +4,7 @@ import java.awt.*;
 public class GameView extends JFrame {
     /* Constants */
     public static final int WINDOW_SIZE = 800;
-    public static final Color background = new Color(25, 150, 50);
+    public static final Color BACKGROUND_COLOR = new Color(25, 150, 50);
 
     /* Instance Variables */
     private Game backend;
@@ -24,7 +24,7 @@ public class GameView extends JFrame {
         switch (backend.getState()) {
             case Game.STATE_INIT:
                 // TODO: Finish init
-                g.setColor(background);
+                g.setColor(BACKGROUND_COLOR);
                 g.fillRect(0, 0, WINDOW_SIZE, WINDOW_SIZE);
                 break;
             case Game.STATE_INSTR:
@@ -37,7 +37,7 @@ public class GameView extends JFrame {
                 break;
             case Game.STATE_END:
                 // TODO: Finish end screen
-                g.setColor(background);
+                g.setColor(BACKGROUND_COLOR);
                 g.fillRect(0, 0, WINDOW_SIZE, WINDOW_SIZE);
                 break;
         }
@@ -46,7 +46,7 @@ public class GameView extends JFrame {
     // TODO: Fix displaying instructions
     public void drawInstructions(Graphics g) {
         // Draw the background
-        g.setColor(background);
+        g.setColor(BACKGROUND_COLOR);
         g.fillRect(0, 0, WINDOW_SIZE, WINDOW_SIZE);
         // Set the font and initial x and y
         g.setColor(Color.WHITE);
@@ -62,10 +62,13 @@ public class GameView extends JFrame {
 
     // TODO: Finish drawing game on play
     public void drawPlay(Graphics g) {
-        g.setColor(background);
+        // Draw the background
+        g.setColor(BACKGROUND_COLOR);
         g.fillRect(0, 0, WINDOW_SIZE, WINDOW_SIZE);
+        // Draw each player
         for (Player p : backend.getPlayers()) {
             p.draw(g);
         }
+        // Check
     }
 }
