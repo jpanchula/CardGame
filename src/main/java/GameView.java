@@ -68,7 +68,6 @@ public class GameView extends JFrame {
         }
     }
 
-    // TODO: Finish drawing game on play
     public void drawPlay(Graphics g) {
         // Draw the background
         g.setColor(BACKGROUND_COLOR);

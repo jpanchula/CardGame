@@ -1,5 +1,4 @@
 // Go Fish by Jacob Panchula
-// TODO: Points counter for each player
 public class Game {
     /* Constants */
     private static final String[] SUITS = {"Spades", "Hearts", "Diamonds", "Clubs"};
@@ -107,7 +106,7 @@ public class Game {
         System.out.println(players[index].getName() + " is asking you for " + rank + "s.");
 
         // Transfers all cards of rank from the opponent's hand to the player's hand
-        int numCards = opponent.give(rank, players[index]);
+        int numCards = opponent.find(rank);
         // If the opponent had none of the rank
         if (numCards == 0) {
             // Allow opponent to tell the player to go fish
@@ -119,37 +118,50 @@ public class Game {
             // Draw card and store its rank
             drawCard(players[index]);
             String cardRank = players[index].getHand().getLast().getRank();
-            // Check for a book
-            players[index].checkForBook(rank);
+            // Check if the player made a book
+            boolean madeBook = players[index].checkForBook(cardRank);
             // If the player caught a card with the rank they were looking for
             if (rank.equals(cardRank)) {
                 // Allow player to continue their turn
                 System.out.println("You caught a(n) " + rank + "!");
                 System.out.println("Press enter to continue your turn.");
                 Input.waitForEnter();
+                // Remove the book from their hand if they made a book
+                if (madeBook)
+                    players[index].removeBook(cardRank);
             }
             else {
                 // Allow player to end their turn
                 System.out.println("Press enter to end your turn.");
                 Input.waitForEnter();
+                // Remove the book from their hand if they made a book
+                if (madeBook)
+                    players[index].removeBook(cardRank);
                 // Moves index to the next player
                 index = (index + 1) % players.length;
                 // Draw buffer and move on to the next turn
                 drawBuffer(players[index]);
             }
         }
+        // If the opponent had the asking card
         else {
             // Allow opponent to give their cards to the player
             System.out.print("Press enter to give " + players[index].getName() + " your " + rank + "(s)!");
             Input.waitForEnter();
+            // Give the cards over
+            opponent.give(rank, players[index]);
             // Draw buffer to pass back to current player
             drawBuffer(players[index]);
             System.out.println("You got " + numCards + " " + rank + "(s) from " + opponent.getName() + "!");
-            // Check if they made a book
-            players[index].checkForBook(rank);
+            // Check if they made a book without removing
+            boolean madeBook = players[index].checkForBook(rank);
             // Allow player to continue their turn
             System.out.println("Press enter to continue your turn.");
             Input.waitForEnter();
+            // Remove the book after the player continues to avoid a ConcurrentModificationException
+            if (madeBook) {
+                players[index].removeBook(rank);
+            }
         }
     }
 
@@ -174,7 +186,8 @@ public class Game {
         // Checks for books
         for (String rank : RANKS) {
             for (Player player : players) {
-                player.checkForBook(rank);
+                if (player.checkForBook(rank))
+                    player.removeBook(rank);
             }
         }
     }

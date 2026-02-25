@@ -62,8 +62,10 @@ public class Deck {
             // Set color and font
             g.setColor(Color.WHITE);
             g.setFont(new Font("Serif", Font.PLAIN, TEXT_SIZE));
+            // Find the x offset for the text based on how many cards are left
+            int offsetX = cardsLeft > 10 ? 10 : 5;
             // Draw the number of cards left
-            g.drawString(Integer.toString(cardsLeft), GameView.WINDOW_CENTER - 10, GameView.WINDOW_CENTER - 60);
+            g.drawString(Integer.toString(cardsLeft), GameView.WINDOW_CENTER - offsetX, GameView.WINDOW_CENTER - 60);
             // Draw the "deck" (a single card back image in the center)
             g.drawImage(Card.getCardBack(),
                     GameView.WINDOW_CENTER - Card.getCardWidth() / 2,
