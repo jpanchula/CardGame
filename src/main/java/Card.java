@@ -3,8 +3,8 @@ import java.awt.*;
 
 public class Card {
     /* Constants */
-    public static final Image cardBack = new ImageIcon("src/main/resources/Cards/back.png").getImage();
-    public static final int CARD_WIDTH = 75;
+    private static final Image CARD_BACK = new ImageIcon("src/main/resources/Cards/back.png").getImage();
+    private static final int CARD_WIDTH = 75;
     private static final int CARD_HEIGHT = 105;
 
     /* Instance variables */
@@ -54,10 +54,25 @@ public class Card {
         this.value = value;
     }
 
+    /* Static methods */
+    // Card back image getter
+    public static Image getCardBack() {
+        return CARD_BACK;
+    }
+
+    // Card width and height getters
+    public static int getCardWidth() {
+        return CARD_WIDTH;
+    }
+
+    public static int getCardHeight() {
+        return CARD_HEIGHT;
+    }
+
     /* Draw self */
     public void draw(Graphics2D g, int x, int y, boolean isDisplayed) {
         // Draw the normal image
-        g.drawImage((isDisplayed ? cardImage : cardBack),
+        g.drawImage((isDisplayed ? cardImage : CARD_BACK),
                 x, y,
                 CARD_WIDTH, CARD_HEIGHT,
                 window);

@@ -2,15 +2,15 @@
 // TODO: Points counter for each player
 public class Game {
     /* Constants */
-    private static final String[] SUITS = {"Clubs", "Diamonds", "Hearts", "Spades"};
-    private static final String[] RANKS = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "King", "Queen", "Ace"};
+    private static final String[] SUITS = {"Spades", "Hearts", "Diamonds", "Clubs"};
+    private static final String[] RANKS = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
     private static final int[] VALUES = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
 
     private static final int MIN_PLAYERS = 2;
     private static final int MAX_PLAYERS = 4;
 
     public static final String[] INSTRUCTIONS = {
-            "\nThis is Go Fish!",
+            "This is Go Fish!",
             "The goal is to win the most \"books\" of cards. A book is any four of a kind.",
             "The player asks an opponent by name for one of the card ranks they have in their hand.",
             "If the opponent has the card, they must give all of them over and the player continues their turn.",
@@ -25,7 +25,8 @@ public class Game {
     public static final int STATE_INIT = 0;
     public static final int STATE_INSTR = 1;
     public static final int STATE_PLAY = 2;
-    public static final int STATE_END = 3;
+    public static final int STATE_BUFFER = 3;
+    public static final int STATE_END = 4;
 
     /* Instance variables */
     private Player[] players;
@@ -85,6 +86,7 @@ public class Game {
         state = STATE_PLAY;
         window.repaint();
         Player.setCurrentTurn(index);
+        Player.setIsPlaying(true);
         // Get an opponent that the player is asking
         Player opponent;
         // If there are more than two players
@@ -230,8 +232,11 @@ public class Game {
 
     // Draws a buffer to pass the turn to the given player
     public void drawBuffer(Player player) {
-        // Set the turn to -1 because it is nobody's turn
-        Player.setCurrentTurn(-1);
+        // Stop play and set the turn to the new player's playerNum
+        Player.setCurrentTurn(player.getPlayerNum());
+        Player.setIsPlaying(false);
+        // Set state to buffer
+        state = STATE_BUFFER;
         window.repaint();
         // Draw 100 new lines
         for (int i = 0; i < 100; i++) {
@@ -240,8 +245,9 @@ public class Game {
         // Wait for the next player to press enter to continue
         System.out.println("Give the computer to " + player.getName() + " and press enter to continue.");
         Input.waitForEnter();
-        // Set the turn to the current player's playerNum
-        Player.setCurrentTurn(player.getPlayerNum());
+        // Resume playing and set state back to play
+        Player.setIsPlaying(true);
+        state = STATE_PLAY;
         window.repaint();
     }
 

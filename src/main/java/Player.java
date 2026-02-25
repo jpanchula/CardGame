@@ -2,12 +2,15 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Player {
-    /* Constants for hand positions */
-    private static final int[] PLAYER_POS = {175, GameView.WINDOW_SIZE - 150};
+    /* Constants */
+    private static final int HAND_POS_X = 163;
+    private static final int HAND_POS_Y = GameView.WINDOW_SIZE - 150;
+    private static final int TEXT_SIZE = 20;
 
     /* Static variables */
     private static int numPlayers;
-    private static int currentTurn;
+    public static int currentTurn;
+    private static boolean isPlaying;
 
     /* Instance variables */
     private String name;
@@ -59,6 +62,11 @@ public class Player {
     // Sets the number of players
     public static void setNumPlayers(int num) {
         numPlayers = num;
+    }
+
+    // Sets isPlaying
+    public static void setIsPlaying(boolean playing) {
+        isPlaying = playing;
     }
 
     /* Methods */
@@ -119,7 +127,7 @@ public class Player {
         }
     }
 
-    // Method that returns true if the player names are equal
+    // Returns true if the player names are equal
     public boolean equals(String otherName) {
         return name.equalsIgnoreCase(otherName);
     }
@@ -127,38 +135,59 @@ public class Player {
 
     /* Draws the current hand and player label */
     public void draw(Graphics g) {
-        // Position for the first card
-        int x = PLAYER_POS[0];
-        int y = PLAYER_POS[1];
-        // Create a Graphics2D object
+        // Create a Graphics2D object for rotation (logic by Perplexity AI)
         Graphics2D g2d = (Graphics2D) g.create();
-
-        // Check playerNum for rotation
-        switch (playerNum) {
-            case 1:
-                // Rotate 90 degrees around the center
-                g2d.rotate(Math.toRadians(90), GameView.WINDOW_SIZE / 2.0, GameView.WINDOW_SIZE / 2.0);
-                break;
-            case 2:
-                // Rotate 180 degrees around the center
-                g2d.rotate(Math.toRadians(180), GameView.WINDOW_SIZE / 2.0, GameView.WINDOW_SIZE / 2.0);
-                break;
-            case 3:
-                // Rotate -90 degrees around the center
-                g2d.rotate(Math.toRadians(-90), GameView.WINDOW_SIZE / 2.0, GameView.WINDOW_SIZE / 2.0);
-                break;
-        }
         // Set color and font
         g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("Serif", Font.PLAIN, 20));
-        // Draw name
-        g2d.drawString(name, GameView.WINDOW_SIZE / 2, GameView.WINDOW_SIZE - 200);
+        g2d.setFont(new Font("Serif", Font.PLAIN, TEXT_SIZE));
+        // Check playerNum for rotation
+        switch (playerNum) {
+            // Player 1
+            case 0:
+                // Draw name on the bottom, adjusting position for name length
+                g2d.drawString(name, GameView.WINDOW_CENTER - name.length() * (TEXT_SIZE / 2), GameView.WINDOW_SIZE - GameView.TEXT_X_OFFSET);
+                break;
+            // Player 2
+            case 1:
+                // If there are more than two players
+                if (numPlayers > 2) {
+                    // Draw name on the left
+                    g2d.drawString(name, GameView.TEXT_X_OFFSET, GameView.WINDOW_CENTER);
+                    // Rotate 90 degrees around the center
+                    g2d.rotate(Math.toRadians(90), GameView.WINDOW_CENTER, GameView.WINDOW_CENTER);
+                }
+                else {
+                    // Draw name on the top, adjusting position for name length
+                    g2d.drawString(name, GameView.WINDOW_CENTER - (name.length() - 1) * (TEXT_SIZE / 2), GameView.TEXT_X_OFFSET);
+                    // Rotate 180 degrees around the center
+                    g2d.rotate(Math.toRadians(180), GameView.WINDOW_CENTER, GameView.WINDOW_CENTER);
+                }
+                break;
+            // Player 3
+            case 2:
+                // Draw name on the top, adjusting position for name length
+                g2d.drawString(name, GameView.WINDOW_CENTER - (name.length() - 1) * (TEXT_SIZE / 2), GameView.TEXT_X_OFFSET);
+                // Rotate 180 degrees around the center
+                g2d.rotate(Math.toRadians(180), GameView.WINDOW_CENTER, GameView.WINDOW_CENTER);
+                break;
+            // Player 4
+            case 3:
+                // Draw name on the right, adjusting position for name length
+                g2d.drawString(name, GameView.WINDOW_SIZE - GameView.TEXT_X_OFFSET - (name.length() - 1) * (TEXT_SIZE / 2), GameView.WINDOW_CENTER);
+                // Rotate -90 degrees around the center
+                g2d.rotate(Math.toRadians(-90), GameView.WINDOW_CENTER, GameView.WINDOW_CENTER);
+                break;
+        }
         // Calculate the offset for each card
-        int offset = (500) / hand.size();
+        int offset = 500 / hand.size();
+        // Calculate the x value of the first card
+        int x = (hand.size() > 1) ? HAND_POS_X : GameView.WINDOW_CENTER - Card.getCardWidth() / 2;
+        // Calculate if the hand should be displayed
+        boolean isDisplayed = (playerNum == currentTurn) && isPlaying;
         // Draw each card
         for (Card c : hand) {
-            c.draw(g2d, x, y, playerNum == currentTurn);
-            // Update position based on offset
+            c.draw(g2d, x, HAND_POS_Y, isDisplayed);
+            // Update position based on offset for next card
             x += offset;
         }
     }

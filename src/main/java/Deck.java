@@ -1,12 +1,18 @@
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Deck {
+    /* Constants */
+    private static final int TEXT_SIZE = 20;
+
     /* Instance variables */
     private ArrayList<Card> cards;
     private int cardsLeft;
+    private GameView window;
 
     /* Constructor */
     public Deck(String[] ranks, String[] suits, int[] values, GameView window) {
+        this.window = window;
         this.cards = new ArrayList<Card>();
         this.cardsLeft = 0;
         // Create and add Cards to the cards ArrayList
@@ -47,6 +53,23 @@ public class Deck {
             Card temp = cards.get(i);
             cards.set(i, cards.get(r));
             cards.set(r, temp);
+        }
+    }
+
+    // Draws the deck and the number of cards in it
+    public void draw(Graphics g) {
+        if (!isEmpty()) {
+            // Set color and font
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Serif", Font.PLAIN, TEXT_SIZE));
+            // Draw the number of cards left
+            g.drawString(Integer.toString(cardsLeft), GameView.WINDOW_CENTER - 10, GameView.WINDOW_CENTER - 60);
+            // Draw the "deck" (a single card back image in the center)
+            g.drawImage(Card.getCardBack(),
+                    GameView.WINDOW_CENTER - Card.getCardWidth() / 2,
+                    GameView.WINDOW_CENTER - Card.getCardHeight() / 2,
+                    Card.getCardWidth(), Card.getCardHeight(),
+                    window);
         }
     }
 }
