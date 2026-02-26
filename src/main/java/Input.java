@@ -48,21 +48,25 @@ public class Input {
     public static Player getOpponent(Player[] players, int selfIndex) {
         Scanner scanner = new Scanner(System.in);
         String input = "";
+        Player player;
         // While the input is the name of a non-existent player or the input is self's name
         // or the input is the name of a player without cards in their hand
         while (Game.isUniquePlayerName(players, input)
-                || players[selfIndex] == Game.findPlayerWithName(players, input)
+                || players[selfIndex].isEqual(Game.findPlayerWithName(players, input))
                 || !Game.findPlayerWithName(players, input).hasCardsInHand()) {
             // Get the user's input
             System.out.print("Enter the name of the person you would like to ask: ");
             input = scanner.nextLine();
             // Error messages
-            if (Game.isUniquePlayerName(players, input))
+            if (Game.isUniquePlayerName(players, input)) {
                 System.out.println("Name must be the name of another player!");
-            else if (players[selfIndex] == Game.findPlayerWithName(players, input))
+                continue;
+            }
+            player = Game.findPlayerWithName(players, input);
+            if (players[selfIndex].isEqual(player))
                 System.out.println("Name cannot be your own!");
             // If the player does not have cards in their hand
-            else if (!Game.findPlayerWithName(players, input).hasCardsInHand())
+            else if (player.hasCardsInHand())
                 System.out.println("Name must be a player that has cards in their hand!");
         }
         return Game.findPlayerWithName(players, input);
@@ -73,16 +77,16 @@ public class Input {
         Scanner scanner = new Scanner(System.in);
         String input = "";
         boolean hasCard = false;
-        // While input is an invalid rank
+        // While input is an invalid rank or the player does not have the given card
         while (Game.isInvalidRank(input) || !hasCard) {
             System.out.print("Enter the rank of the card that you would like to ask for: ");
             input = scanner.nextLine();
             // For each card in the hand
             for (Card card : hand) {
-                // If the card has the inputted rank
+                // If the player has a card of the inputted rank
                 if (card.getRank().equalsIgnoreCase(input)) {
-                    hasCard = true;
                     // Break the loop and return input
+                    hasCard = true;
                     break;
                 }
             }

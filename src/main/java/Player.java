@@ -6,11 +6,13 @@ public class Player {
     private static final int HAND_POS_X = 163;
     private static final int HAND_POS_Y = GameView.WINDOW_SIZE - 150;
     private static final int TEXT_SIZE = 20;
+    private static final int TEXT_OFFSET = 175;
+    private static final int LETTER_SIZE = 7;
 
-    private static final int BOTTOM = 0;
-    private static final int LEFT = 1;
-    private static final int TOP = 2;
-    private static final int RIGHT = 3;
+    private static final int LAYOUT_BOTTOM = 0;
+    private static final int LAYOUT_LEFT = 1;
+    private static final int LAYOUT_TOP = 2;
+    private static final int LAYOUT_RIGHT = 3;
 
     /* Static variables */
     private static int numPlayers;
@@ -141,8 +143,13 @@ public class Player {
     }
 
     // Returns true if the player names are equal
-    public boolean equals(String otherName) {
+    public boolean isEqual(String otherName) {
         return name.equalsIgnoreCase(otherName);
+    }
+
+    // Returns true if the players are equal
+    public boolean isEqual(Player other) {
+        return this == other;
     }
 
     /* Draws the current hand and player label */
@@ -167,45 +174,57 @@ public class Player {
 
     // Rotates the layout and draws name and points
     public void rotateAndDrawName(Graphics2D g2d) {
-        // Calculate the layout based on playerNum
-        // TODO: Fix layout calculation
-        int layout = 0;
+        // Calculate the layout based on playerNum, current turn, and numPlayers
+        int layout;
+        // If it is the player's turn
         if (playerNum == currentTurn)
-            layout = BOTTOM;
-        else if (playerNum == (currentTurn + 1) % numPlayers && playerNum > 2)
-            layout = LEFT;
+            // Set layout to bottom
+            layout = LAYOUT_BOTTOM;
+        // If it is not the player's turn but there are only two players
         else if (numPlayers == 2)
-            layout = TOP;
+            // Set layout to top
+            layout = LAYOUT_TOP;
+        // If the player's turn is 1 turn away
+        else if (playerNum == (currentTurn + 1) % numPlayers)
+            // Set layout to left
+            layout = LAYOUT_LEFT;
+        // If the player's turn is 2 turns away
+        else if (playerNum == (currentTurn + 2) % numPlayers)
+            // Set layout to top
+            layout = LAYOUT_TOP;
         else
-            layout = RIGHT;
+            // Set layout to right
+            layout = LAYOUT_RIGHT;
 
         // Set color and font
         g2d.setColor(Color.WHITE);
         g2d.setFont(new Font("Serif", Font.PLAIN, TEXT_SIZE));
+        // Make the display name
+        String displayName = name + ": " + points + " points";
         // Apply the layout
         switch (layout) {
-            case BOTTOM:
+            case LAYOUT_BOTTOM:
                 // Draw name on the bottom, adjusting position for name length
-                g2d.drawString(name, GameView.WINDOW_CENTER - (name.length() - 1) * (TEXT_SIZE / 2), GameView.WINDOW_SIZE - GameView.TEXT_X_OFFSET);
+                g2d.drawString(displayName, GameView.WINDOW_CENTER - displayName.length() * LETTER_SIZE, GameView.WINDOW_SIZE - TEXT_OFFSET);
                 break;
             // Left/top (next player)
-            case LEFT:
-                // Draw name on the top, adjusting position for name length
-                g2d.drawString(name, GameView.WINDOW_CENTER - (name.length() - 1) * (TEXT_SIZE / 2), GameView.TEXT_X_OFFSET);
-                // Rotate 180 degrees around the center
-                g2d.rotate(Math.toRadians(180), GameView.WINDOW_CENTER, GameView.WINDOW_CENTER);
+            case LAYOUT_LEFT:
+                // Draw name on the left
+                g2d.drawString(displayName, TEXT_OFFSET, GameView.WINDOW_CENTER);
+                // Rotate 90 degrees around the center
+                g2d.rotate(Math.toRadians(90), GameView.WINDOW_CENTER, GameView.WINDOW_CENTER);
                 break;
             // Top
-            case TOP:
+            case LAYOUT_TOP:
                 // Draw name on the top, adjusting position for name length
-                g2d.drawString(name, GameView.WINDOW_CENTER - (name.length() - 1) * (TEXT_SIZE / 2), GameView.TEXT_X_OFFSET);
+                g2d.drawString(displayName, GameView.WINDOW_CENTER - displayName.length() * LETTER_SIZE, TEXT_OFFSET);
                 // Rotate 180 degrees around the center
                 g2d.rotate(Math.toRadians(180), GameView.WINDOW_CENTER, GameView.WINDOW_CENTER);
                 break;
             // Right
-            case RIGHT:
+            case LAYOUT_RIGHT:
                 // Draw name on the right, adjusting position for name length
-                g2d.drawString(name, GameView.WINDOW_SIZE - GameView.TEXT_X_OFFSET - (name.length() - 1) * (TEXT_SIZE / 2), GameView.WINDOW_CENTER);
+                g2d.drawString(displayName, GameView.WINDOW_SIZE - TEXT_OFFSET - displayName.length() * LETTER_SIZE, GameView.WINDOW_CENTER);
                 // Rotate -90 degrees around the center
                 g2d.rotate(Math.toRadians(-90), GameView.WINDOW_CENTER, GameView.WINDOW_CENTER);
                 break;

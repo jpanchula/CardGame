@@ -177,8 +177,8 @@ public class Game {
     // Deals each player a hand of cards depending on the number of players and checks for books
     public void deal() {
         // 7 cards each if less than 4 players, 5 cards each otherwise
-        int num_cards = players.length < MAX_PLAYERS ? 7 : 5;
-        for (int i = 0; i < num_cards; i++) {
+        int numCards = players.length < MAX_PLAYERS ? 7 : 5;
+        for (int i = 0; i < numCards; i++) {
             for (Player player : players) {
                 player.addCard(deck.deal());
             }
@@ -192,6 +192,7 @@ public class Game {
         }
     }
 
+    // Checks if the game is over
     public boolean gameOver() {
         // Count the total number of books each player has
         int pointSum = 0;
@@ -245,8 +246,9 @@ public class Game {
 
     // Draws a buffer to pass the turn to the given player
     public void drawBuffer(Player player) {
-        // Stop play and set the turn to the new player's playerNum
+        // Set the turn to the new player's playerNum
         Player.setCurrentTurn(player.getPlayerNum());
+        // Set playing to false to hide all players cards
         Player.setIsPlaying(false);
         // Set state to buffer
         state = STATE_BUFFER;
@@ -281,7 +283,7 @@ public class Game {
         // For each player
         for (Player player : players) {
             // If the player is not null and has the same name
-            if (player != null && player.equals(name))
+            if (player != null && player.isEqual(name))
                 return false;
         }
         return true;
@@ -306,7 +308,7 @@ public class Game {
     // Returns the player that has the name
     public static Player findPlayerWithName(Player[] players, String name) {
         for (Player player : players) {
-            if (player.equals(name)) {
+            if (player.isEqual(name)) {
                 return player;
             }
         }
