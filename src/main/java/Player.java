@@ -175,26 +175,7 @@ public class Player {
     // Rotates the layout and draws name and points
     public void rotateAndDrawName(Graphics2D g2d) {
         // Calculate the layout based on playerNum, current turn, and numPlayers
-        int layout;
-        // If it is the player's turn
-        if (playerNum == currentTurn)
-            // Set layout to bottom
-            layout = LAYOUT_BOTTOM;
-        // If it is not the player's turn but there are only two players
-        else if (numPlayers == 2)
-            // Set layout to top
-            layout = LAYOUT_TOP;
-        // If the player's turn is 1 turn away
-        else if (playerNum == (currentTurn + 1) % numPlayers)
-            // Set layout to left
-            layout = LAYOUT_LEFT;
-        // If the player's turn is 2 turns away
-        else if (playerNum == (currentTurn + 2) % numPlayers)
-            // Set layout to top
-            layout = LAYOUT_TOP;
-        else
-            // Set layout to right
-            layout = LAYOUT_RIGHT;
+        int layout = getLayout();
 
         // Set color and font
         g2d.setColor(Color.WHITE);
@@ -229,6 +210,28 @@ public class Player {
                 g2d.rotate(Math.toRadians(-90), GameView.WINDOW_CENTER, GameView.WINDOW_CENTER);
                 break;
         }
+    }
+
+    public int getLayout() {
+        // If it is the player's turn
+        if (playerNum == currentTurn)
+            // Set layout to bottom
+            return LAYOUT_BOTTOM;
+        // If it is not the player's turn but there are only two players
+        else if (numPlayers == 2)
+            // Set layout to top
+            return LAYOUT_TOP;
+        // If the player's turn is 1 turn away
+        else if (playerNum == (currentTurn + 1) % numPlayers)
+            // Set layout to left
+            return LAYOUT_LEFT;
+        // If the player's turn is 2 turns away
+        else if (playerNum == (currentTurn + 2) % numPlayers)
+            // Set layout to top
+            return LAYOUT_TOP;
+        else
+            // Set layout to right
+            return LAYOUT_RIGHT;
     }
 
     /* toString */
