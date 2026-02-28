@@ -62,11 +62,13 @@ public class Input {
                 System.out.println("Name must be the name of another player!");
                 continue;
             }
+            // Update player
             player = Game.findPlayerWithName(players, input);
+            // If the player is the current player
             if (players[selfIndex].isEqual(player))
                 System.out.println("Name cannot be your own!");
             // If the player does not have cards in their hand
-            else if (player.hasCardsInHand())
+            else if (!player.hasCardsInHand())
                 System.out.println("Name must be a player that has cards in their hand!");
         }
         return Game.findPlayerWithName(players, input);
