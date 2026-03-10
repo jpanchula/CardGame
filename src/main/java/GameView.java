@@ -90,6 +90,14 @@ public class GameView extends JFrame {
         }
         // Draw the deck
         backend.getDeck().draw(g);
+
+// creating the actual text for the "book" message...also removes it after the next repaint
+        if (!backend.getBookMessage().isEmpty()) {
+            g.setColor(Color.YELLOW);
+            g.setFont(new Font("Serif", Font.BOLD, 30));
+            g.drawString(backend.getBookMessage(), WINDOW_CENTER - 150, WINDOW_CENTER);
+            backend.setBookMessage(""); // clear after drawing
+        }
     }
 
     // Draws the buffer message over the play screen

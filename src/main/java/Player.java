@@ -19,6 +19,7 @@ public class Player {
     public static int currentTurn;
     private static boolean isPlaying;
 
+
     /* Instance variables */
     private String name;
     private ArrayList<Card> hand;
@@ -114,17 +115,15 @@ public class Player {
     }
 
     // Returns true if the player has a book, if so, removing it from their hand and adds 1 to points
-    public boolean checkForBook(String rank) {
-        // Count the number of cards they have
+    // added Game into the parameters to make it work with the GUI
+    public boolean checkForBook(String rank, Game game) {
         int numCards = 0;
         for (Card card : hand) {
             if (card.getRank().equalsIgnoreCase(rank))
                 numCards++;
         }
-        // If the player has a book of 4 cards
         if (numCards == 4) {
-            // Print that they have a book and add to their points
-            System.out.println(name + " made a book of " + rank + "s!");
+            game.setBookMessage("You got a book of " + rank + "s!");
             return true;
         }
         return false;
@@ -170,6 +169,7 @@ public class Player {
             // Update position based on offset for next card
             x += offset;
         }
+
     }
 
     // Rotates the layout and draws name and points

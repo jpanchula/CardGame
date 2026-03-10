@@ -1,6 +1,7 @@
 // Go Fish by Jacob Panchula
 public class Game {
     /* Constants */
+    //testing
     private static final String[] SUITS = {"Spades", "Hearts", "Diamonds", "Clubs"};
     private static final String[] RANKS = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
     private static final int[] VALUES = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
@@ -33,6 +34,7 @@ public class Game {
     private int index;
     private int state;
     private GameView window;
+    private String bookMessage = "";
 
     /* Constructor */
     public Game() {
@@ -119,7 +121,7 @@ public class Game {
             drawCard(players[index]);
             String cardRank = players[index].getHand().getLast().getRank();
             // Check if the player made a book
-            boolean madeBook = players[index].checkForBook(cardRank);
+            boolean madeBook = players[index].checkForBook(cardRank, this);
             // If the player caught a card with the rank they were looking for
             if (rank.equals(cardRank)) {
                 // Allow player to continue their turn
@@ -154,7 +156,7 @@ public class Game {
             drawBuffer(players[index]);
             System.out.println("You got " + numCards + " " + rank + "(s) from " + opponent.getName() + "!");
             // Check if they made a book without removing
-            boolean madeBook = players[index].checkForBook(rank);
+            boolean madeBook = players[index].checkForBook(rank, this);
             // Allow player to continue their turn
             System.out.println("Press enter to continue your turn.");
             Input.waitForEnter();
@@ -186,7 +188,7 @@ public class Game {
         // Checks for books
         for (String rank : RANKS) {
             for (Player player : players) {
-                if (player.checkForBook(rank))
+                if (player.checkForBook(rank, this))
                     player.removeBook(rank);
             }
         }
@@ -240,6 +242,15 @@ public class Game {
         // Wait until the user moves on
         System.out.println("Press enter to begin!");
         Input.waitForEnter();
+    }
+
+//getters and setters for the on-screen book message
+    public String getBookMessage() {
+        return bookMessage;
+    }
+
+    public void setBookMessage(String message) {
+        bookMessage = message;
     }
 
     /* Static Methods */
