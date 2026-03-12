@@ -234,6 +234,12 @@ public class Player {
             return LAYOUT_RIGHT;
     }
 
+    // Resets the player for a new round
+    public void reset() {
+        hand.clear();
+        points = 0;
+    }
+
     /* toString */
     @Override
     public String toString() {

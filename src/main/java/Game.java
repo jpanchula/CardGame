@@ -211,6 +211,8 @@ public class Game {
             System.out.println(player.getName() + " has " + player.getPoints() + " point(s).");
         }
         System.out.println("\nThank you for playing!");
+
+        window.setRestartButtonVisible(true);
     }
 
     // Returns the state
@@ -240,6 +242,44 @@ public class Game {
         // Wait until the user moves on
         System.out.println("Press enter to begin!");
         Input.waitForEnter();
+    }
+
+    // Resets the game state and starts a new round
+    public void restart() {
+        // Hide the restart button
+        window.setRestartButtonVisible(false);
+
+        // Reset core variables
+        state = STATE_INIT;
+        index = 0;
+
+        // Start the game initialization and loop on a new Thread
+        // to prevent freezing the Swing GUI while waiting for console input.
+        new Thread(() -> {
+            // Repaint the window to show the starting green background
+            // ("Follow instructions in the console to begin!")
+            window.repaint();
+
+            System.out.println("\n\n--- Starting a New Game ---");
+
+            // 1. Re-prompt for the number of players and their names
+            players = new Player[Input.getNumPlayers(MIN_PLAYERS, MAX_PLAYERS)];
+
+            // Set the static variable in the Player class
+            // (Note: Your original Game constructor likely does this)
+            // If your method is named differently, match what is in your Game() constructor
+            Player.currentTurn = 0;
+
+            for (int i = 0; i < players.length; i++) {
+                players[i] = new Player(Input.getUniqueName(players, i), i);
+            }
+
+            // 2. Generate a fresh deck
+            deck = new Deck(RANKS, SUITS, VALUES, window);
+
+            // 3. Start the game!
+            play();
+        }).start();
     }
 
     /* Static Methods */
